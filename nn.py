@@ -20,24 +20,41 @@ class Network:
         for i in range(len(self.dims) - 1):
             current = self.dims[i]
             next = self.dims[i + 1]
-            self.weights.append(rng.random((current, next), np.float64))
-            self.biases.append(rng.random(current, np.float64))
+            self.weights.append(rng.random((next, current), np.float64))
+            self.biases.append(rng.random((next, 1), np.float64))
 
 
-    def activation(self):
-        raise NotImplementedError("activation() must be implemented")
+    def activation(self, values):
+        """Activation function: ReLU"""
+        return np.maximum(values, 0)
 
 
     def forward(self, input):
         """Forward propegate input through the network"""
-        # 1. Multiply: weights . input
 
-        # 2. Add: biases
+        # Set first layer (input layer)
+        self.layers[0] = input
+        for i in range(len(self.layers) - 1):
 
-        # 3. Activate: activation function
+            # 1. Multiply: weights @ input
+            step_one = self.weights[i] @ self.layers[i]
+            print("\nOne:\n", step_one)
 
-        # 4. Repeat until the output layer
-        raise NotImplementedError("forward() must be implemented")
+            # 2. Add: biases
+            step_two = step_one + self.biases[i]
+            print("Two:\n", step_two)
+
+            # 3. Activate: activation function
+            step_three = self.activation(step_two)
+            print("Three:\n", step_three)
+
+            # 4. Save 
+            self.layers[i + 1] = step_three
+
+            # 4. Repeat until the output layer
+
+        print("=====================")
+        print(self.layers)
 
 
 
